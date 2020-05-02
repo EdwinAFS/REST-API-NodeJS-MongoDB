@@ -13,8 +13,7 @@ app.set('port', process.env.PORT || 3000);
 // Route
 app.get('/', (req, res) => {
 	res.status(200).json({
-		bienvenido: 'Bienvenido a la API Cafe',
-		uriDB: process.env.urlDB
+		bienvenido: 'Bienvenido a la API Cafe'
 	});
 });
 
