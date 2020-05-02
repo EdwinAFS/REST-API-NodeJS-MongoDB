@@ -14,7 +14,8 @@ app.set('port', process.env.PORT || 3000);
 app.get('/', (req, res) => {
 	res.status(200).json({
 		bienvenido: 'Bienvenido a la API Cafe',
-		uri: process.env.MONGO_URI
+		uri: process.env.MONGO_URI,
+		entorno: process.env.NODE_ENV
 	});
 });
 
