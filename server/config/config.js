@@ -1,7 +1,5 @@
 
 process.env.NODE_ENV = process.env.NODE_ENV || 'dev';
-process.env.MONGO_URI = process.env.MONGO_URI || '';
-
 
 let urlDB;
 
