@@ -3,8 +3,8 @@ const uniqueValidator = require('mongoose-unique-validator')
 
 const roles = {
 	values: [
-		'ADMIN_ROL',
-		'USER_ROL'
+		'ADMIN_ROLE',
+		'USER_ROLE'
 	],
 	message: '{VALUE} no es un rol valido'
 }
@@ -50,4 +50,7 @@ usuarioSchema.methods.toJSON = function(){
 
 usuarioSchema.plugin( uniqueValidator,{ message: '{PATH} debe de ser unico' } );
 
-module.exports = mongoose.model('Usuario', usuarioSchema);
+module.exports = { 
+	Usuario: mongoose.model('Usuario', usuarioSchema),
+	roles
+}

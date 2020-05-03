@@ -9,4 +9,10 @@ if( process.env.NODE_ENV === 'dev'){
 	urlDB = process.env.MONGO_URI
 }
 
+// expre token
+process.env.TOKEN_EXPIRATION = '1h';
+
+// seed autentication
+process.env.SEED = process.env.SEED || 'mi-secret-dev';
+
 process.env.urlDB = urlDB;

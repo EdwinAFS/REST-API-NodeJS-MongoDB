@@ -1,11 +1,13 @@
-const express = require('express');
-const Usuario = require('../models/usuario');
+const { Router } = require('express');
+const { Usuario } = require('../models/usuario');
 const bcrypt = require('bcrypt');
 const _ = require('underscore');
+const { verifyToken } = require('../middleware/authentication');
+const hasRole = require('../middleware/hasRole');
 
-const app = express();
+const router = Router();
 
-app.get('/usuario', ({ query }, res)=>{
+router.get('/', verifyToken, ({ query }, res)=>{
 	
 	let from = query.from || 0;
 	let limit = query.limit || 5;
@@ -15,11 +17,21 @@ app.get('/usuario', ({ query }, res)=>{
 		.limit( Number(limit) )
 		.exec((err, usuarios) => {
 
-			handlerError( err, res );
+			if(err) {
+				return res.status( 400 ).json({
+					ok: false,
+					err
+				});
+			};
 
-			Usuario.count({estado: true}, (err, count) => {
+			Usuario.countDocuments({estado: true}, (err, count) => {
 
-				handlerError( err, res );
+				if(err) {
+					return res.status( 400 ).json({
+						ok: false,
+						err
+					});
+				};
 
 				res.json({
 					ok: true,
@@ -31,7 +43,7 @@ app.get('/usuario', ({ query }, res)=>{
 		});
 });
 
-app.post('/usuario', ({body}, res) => {
+router.post('/', verifyToken, hasRole('ADMIN_ROL'), ({body}, res) => {
 
 	const usuario = new Usuario({
 		nombre: body.nombre,
@@ -45,7 +57,12 @@ app.post('/usuario', ({body}, res) => {
 
 	usuario.save((err, usuarioDB) => {
 		
-		handlerError( err, res );
+		if(err) {
+			return res.status( 400 ).json({
+				ok: false,
+				err
+			});
+		};
 
 		res.status(201).json({
 			usuario: usuarioDB
@@ -54,14 +71,19 @@ app.post('/usuario', ({body}, res) => {
 	});
 });
 
-app.put('/usuario/:id', ({body, params}, res) => {
+router.put('/:id',verifyToken,  ({body, params}, res) => {
 
 	const id = params.id;
 	const usuario = _.pick( body, ['nombre', 'email', 'img', 'role', 'estado']);
 
 	Usuario.findByIdAndUpdate(id, usuario, {new: true, runValidators: true}, (err, usuarioDB) => {
 		
-		handlerError( err, res );
+		if(err) {
+			return res.status( 400 ).json({
+				ok: false,
+				err
+			});
+		};
 		
 		return res.status(200).json({
 			ok: true,
@@ -72,12 +94,17 @@ app.put('/usuario/:id', ({body, params}, res) => {
 
 });
 
-app.delete('/usuario/:id', ({params}, res) =>{
+router.delete('/:id',verifyToken, hasRole('ADMIN_ROL'), ({params}, res) =>{
 	
 	const id = params.id;
 
 	Usuario.findByIdAndUpdate(id, { estado: false },{ new: true}, (err, usuarioDB)=>{
-		handlerError(err, res);
+		if(err) {
+			return res.status( 400 ).json({
+				ok: false,
+				err
+			});
+		};
 
 		res.json({
 			ok: true,
@@ -87,13 +114,5 @@ app.delete('/usuario/:id', ({params}, res) =>{
 	});
 });
 
-function handlerError( err, res, errorCode = 400 ){
-	if(err) {
-		return res.status( errorCode ).json({
-			ok: false,
-			err
-		});
-	};
-}
 
-module.exports = app;
+module.exports = router;
