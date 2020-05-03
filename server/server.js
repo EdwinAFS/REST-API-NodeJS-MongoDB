@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser  = require('body-parser');
 const mongoose  = require('mongoose');
+const path  = require('path');
 require('./config/config');
 
 const app = express();
@@ -9,6 +10,9 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: false })) 
 app.use(bodyParser.json())
 app.set('port', process.env.PORT || 3000);
+
+// statics configuration
+app.use( express.static( path.resolve( __dirname, '../public') ) );
 
 // routes
 app.use( require('./routes/routes') );
