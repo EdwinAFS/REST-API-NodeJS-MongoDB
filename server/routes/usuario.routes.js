@@ -2,12 +2,11 @@ const { Router } = require('express');
 const { Usuario } = require('../models/usuario');
 const bcrypt = require('bcrypt');
 const _ = require('underscore');
-const { verifyToken } = require('../middleware/authentication');
 const hasRole = require('../middleware/hasRole');
 
 const router = Router();
 
-router.get('/', verifyToken, ({ query }, res)=>{
+router.get('/', ({ query }, res)=>{
 	
 	let from = query.from || 0;
 	let limit = query.limit || 5;
@@ -43,7 +42,7 @@ router.get('/', verifyToken, ({ query }, res)=>{
 		});
 });
 
-router.post('/', verifyToken, hasRole('ADMIN_ROL'), ({body}, res) => {
+router.post('/', hasRole('ADMIN_ROL'), ({body}, res) => {
 
 	const usuario = new Usuario({
 		nombre: body.nombre,
@@ -71,7 +70,7 @@ router.post('/', verifyToken, hasRole('ADMIN_ROL'), ({body}, res) => {
 	});
 });
 
-router.put('/:id',verifyToken,  ({body, params}, res) => {
+router.put('/:id', ({body, params}, res) => {
 
 	const id = params.id;
 	const usuario = _.pick( body, ['nombre', 'email', 'img', 'role', 'estado']);
@@ -94,7 +93,7 @@ router.put('/:id',verifyToken,  ({body, params}, res) => {
 
 });
 
-router.delete('/:id',verifyToken, hasRole('ADMIN_ROL'), ({params}, res) =>{
+router.delete('/:id', hasRole('ADMIN_ROL'), ({params}, res) =>{
 	
 	const id = params.id;
 

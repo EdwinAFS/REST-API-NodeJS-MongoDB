@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-
+const { verifyToken } = require('../middleware/authentication');
 
 app.get('/', (req, res) => {
 	res.status(200).json({
@@ -8,9 +8,8 @@ app.get('/', (req, res) => {
 	});
 });
 
-app.use( '/usuario', require('./usuario.routes') );
-app.use( '/login', require('./login.routes') );
-
+app.use( '/login',  require('./login.routes') );
+app.use( '/usuario', verifyToken, require('./usuario.routes') );
 
 // rutas 404
 app.use(function(req, res ) {

@@ -6,13 +6,6 @@ const { verifyToken } = require('../middleware/authentication');
 
 const router = Router();
 
-router.get('/', verifyToken, ( req, res)=>{
-	res.json({
-		ok: true,
-		usuario: req.usuario
-	});
-});
-
 router.post('/', ({ body }, res)=>{
 
 	Usuario.findOne({email: body.email}, (err, usuarioDB) => {
