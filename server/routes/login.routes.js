@@ -7,7 +7,10 @@ const { verifyToken } = require("../middleware/authentication");
 const router = Router();
 
 router.get("/", (_req, res) => {
-    res.status(200).send("Hello world");
+    res.status(200).json({
+        ok: true,
+        saludo: "Hola con CI/CD",
+    });
 });
 
 router.post("/", ({ body }, res) => {
