@@ -6,6 +6,10 @@ describe("/login endpoint", () => {
     it("should return a response", async () => {
         const response = await request.get("/login");
         expect(response.status).toBe(200);
-        expect(response.text).toBe("Hello world");
+        expect(response.type).toBe("application/json");
+        expect(response.body).toEqual({
+            ok: true,
+            saludo: "Hola con CI/CD",
+        });
     });
 });
